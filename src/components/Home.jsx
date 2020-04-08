@@ -2,8 +2,15 @@ import React, { Component } from "react";
 import Header from "./Header.jsx";
 import Footer from "./Footer.jsx";
 import axios from "axios";
+import Products from "./Products.jsx";
+import Product from "./Product.jsx";
 
 class Home extends Component {
+  state = {
+    products: [],
+    searchKeyword: "",
+  };
+
   constructor(props) {
     super(props);
     this.handleSearch = this.handleSearch.bind(this);
@@ -15,6 +22,7 @@ class Home extends Component {
         "https://raw.githubusercontent.com/itprofessionalsfrontend/shop/master/products.json"
       )
       .then((response) => {
+        this.setState({ products: response.data });
         console.log(response.data);
       })
       .catch(function (error) {
@@ -25,6 +33,7 @@ class Home extends Component {
 
   handleSearch(event) {
     console.log("handle search called..");
+    this.setState({ searchKeyword: event.target.value });
   }
 
   componentDidMount() {
@@ -32,10 +41,29 @@ class Home extends Component {
   }
 
   render() {
+    let productList = this.state.products
+      .filter(
+        (item) =>
+          item.name
+            .toLowerCase()
+            .includes(this.state.searchKeyword.toLowerCase()) ||
+          !this.state.searchKeyword
+      )
+      .map((product) => {
+        return (
+          <Product
+            key={product.id}
+            name={product.name}
+            price={product.price}
+            image={product.image}
+          ></Product>
+        );
+      });
+
     return (
       <>
         <Header search={this.handleSearch}></Header>
-
+        <Products productList={productList}></Products>
         <Footer></Footer>
       </>
     );
