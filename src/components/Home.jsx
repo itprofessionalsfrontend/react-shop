@@ -3,12 +3,12 @@ import Header from "./Header.jsx";
 import Footer from "./Footer.jsx";
 import axios from "axios";
 import Products from "./Products.jsx";
-import Product from "./Product.jsx";
 
 class Home extends Component {
   state = {
     products: [],
     searchKeyword: "",
+    loading: true,
   };
 
   constructor(props) {
@@ -22,7 +22,7 @@ class Home extends Component {
         "https://raw.githubusercontent.com/itprofessionalsfrontend/shop/master/products.json"
       )
       .then((response) => {
-        this.setState({ products: response.data });
+        this.setState({ products: response.data, loading: false });
         console.log(response.data);
       })
       .catch(function (error) {
@@ -41,29 +41,32 @@ class Home extends Component {
   }
 
   render() {
-    let productList = this.state.products
-      .filter(
-        (item) =>
-          item.name
-            .toLowerCase()
-            .includes(this.state.searchKeyword.toLowerCase()) ||
-          !this.state.searchKeyword
-      )
-      .map((product) => {
-        return (
-          <Product
-            key={product.id}
-            name={product.name}
-            price={product.price}
-            image={product.image}
-          ></Product>
-        );
-      });
+    let productList = this.state.products.filter(
+      (item) =>
+        item.name
+          .toLowerCase()
+          .includes(this.state.searchKeyword.toLowerCase()) ||
+        !this.state.searchKeyword
+    );
+    //MOVED INTO PRODUCTS COMPONENT
+    // .map((product) => {
+    //   return (
+    //     <Product
+    //       key={product.id}
+    //       name={product.name}
+    //       price={product.price}
+    //       image={product.image}
+    //     ></Product>
+    //   );
+    // });
 
     return (
       <>
         <Header search={this.handleSearch}></Header>
-        <Products productList={productList}></Products>
+        <Products
+          productList={productList}
+          loading={this.state.loading}
+        ></Products>
         <Footer></Footer>
       </>
     );
