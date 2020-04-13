@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import Count from "./Count.jsx";
 
 class Product extends Component {
   constructor(props) {
@@ -13,6 +14,7 @@ class Product extends Component {
         </div>
         <h4 className="product-name">{this.props.name}</h4>
         <p className="product-price">{this.props.price}</p>
+        <Count />
         <div className="product-action">
           <button type="button">ADD TO CART</button>
         </div>

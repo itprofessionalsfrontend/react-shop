@@ -22,6 +22,10 @@ class Home extends Component {
         "https://raw.githubusercontent.com/itprofessionalsfrontend/shop/master/products.json"
       )
       .then((response) => {
+        // setTimeout(
+        //   ()=>this.setState({ products: response.data, loading: false }),
+        //   10000
+        // );
         this.setState({ products: response.data, loading: false });
         console.log(response.data);
       })

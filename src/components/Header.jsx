@@ -21,6 +21,24 @@ const Header = (props) => {
             ></input>
           </div>
         </div>
+        <div className="cart">
+          <div className="cart-info">
+            <table>
+              <tbody>
+                <tr>
+                  <td>Items</td>
+                  <td>:</td>
+                  <td>{5}</td>
+                </tr>
+                <tr>
+                  <td>Total</td>
+                  <td>:</td>
+                  <td>{556}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
     </header>
   );
