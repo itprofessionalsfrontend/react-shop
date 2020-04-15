@@ -10,26 +10,35 @@ class Count extends Component {
   }
 
   countChange = (e) => {
-    this.setState({ countValue: Number(e.target.value) });
+    this.setState({ countValue: Number(e.target.value) }, () =>
+      this.props.getCount(this.state.countValue)
+    );
   };
 
   decrement = () => {
     if (this.state.countValue <= 1) {
       return 1;
     } else {
-      this.setState((prevState) => ({
-        countValue: Number(prevState.countValue) - 1,
-      }));
+      this.setState(
+        (prevState) => ({
+          countValue: Number(prevState.countValue) - 1,
+        }),
+        () => this.props.getCount(this.state.countValue)
+      );
     }
   };
 
   increment = () => {
-    this.setState((prevState) => ({
-      countValue: Number(prevState.countValue) + 1,
-    }));
+    this.setState(
+      (prevState) => ({
+        countValue: Number(prevState.countValue) + 1,
+      }),
+      () => this.props.getCount(this.state.countValue)
+    );
   };
 
   render() {
+    // console.log("count render called")
     return (
       <div className="stepper-input">
         <a className="decrement" href="#" onClick={this.decrement}>

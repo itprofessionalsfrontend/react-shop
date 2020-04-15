@@ -9,6 +9,9 @@ class Home extends Component {
     products: [],
     searchKeyword: "",
     loading: true,
+    cartProducts: [],
+    itemCount: 0,
+    totalPrice: 0,
   };
 
   constructor(props) {
@@ -44,6 +47,46 @@ class Home extends Component {
     this.getProducts();
   }
 
+  addToCart = (selectedProduct) => {
+    // console.log("Home addtocart called. " + selectedProduct.quantity);
+    let cartProductItems = this.state.cartProducts;
+    if (this.checkProduct(selectedProduct.id)) {
+      //todo:update
+      // console.log("already exist product start");
+      let productIndex = cartProductItems.findIndex(
+        (p) => p.id === selectedProduct.id
+      );
+      cartProductItems[productIndex].quantity += selectedProduct.quantity;
+      // console.log("already exist product end");
+    } else {
+      //add
+      cartProductItems.push(selectedProduct);
+    }
+    // console.log(cartProductItems);
+    this.setState({
+      cartProducts: cartProductItems,
+      itemCount: this.state.cartProducts.length,
+      totalPrice: this.getTotalPrice(cartProductItems),
+    });
+  };
+
+  checkProduct(productId) {
+    return this.state.cartProducts.some((product) => {
+      return product.id === productId;
+    });
+  }
+
+  getTotalPrice(cartProductList) {
+    console.log(cartProductList);
+    let priceArray = cartProductList.map((p) => p.price * p.quantity);
+    console.log(priceArray);
+
+    let result = priceArray.reduce(
+      (total, currentValue) => total + currentValue
+    );
+    return result;
+  }
+
   render() {
     let productList = this.state.products.filter(
       (item) =>
@@ -66,10 +109,16 @@ class Home extends Component {
 
     return (
       <>
-        <Header search={this.handleSearch}></Header>
+        <Header
+          search={this.handleSearch}
+          cartProducts={this.state.cartProducts}
+          productCount={this.state.itemCount}
+          totalPrice={this.state.totalPrice}
+        ></Header>
         <Products
           productList={productList}
           loading={this.state.loading}
+          addToCart={this.addToCart}
         ></Products>
         <Footer></Footer>
       </>
