@@ -47,6 +47,24 @@ class Home extends Component {
     this.getProducts();
   }
 
+  removeProduct = (id) => {
+    console.log("removeProduct", id);
+    //1.Method - filter
+    let filteredProducts = this.state.cartProducts.filter(
+      (item) => item.id !== id
+    );
+
+    this.setState({
+      cartProducts: filteredProducts,
+      itemCount: filteredProducts.length,
+      totalPrice: this.getTotalPrice(filteredProducts),
+    });
+
+    console.log("filteredList", filteredProducts);
+
+    //2.Method - splice
+  };
+
   addToCart = (selectedProduct) => {
     // console.log("Home addtocart called. " + selectedProduct.quantity);
     let cartProductItems = this.state.cartProducts;
@@ -114,6 +132,7 @@ class Home extends Component {
           cartProducts={this.state.cartProducts}
           productCount={this.state.itemCount}
           totalPrice={this.state.totalPrice}
+          removeItem={this.removeProduct}
         ></Header>
         <Products
           productList={productList}

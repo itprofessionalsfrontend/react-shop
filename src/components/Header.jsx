@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Scrollbars } from "react-custom-scrollbars";
 
 class Header extends Component {
   state = {
@@ -66,7 +67,12 @@ class Header extends Component {
             <p className="quantity">{product.quantity}</p>
             <p className="amount">{product.price * product.quantity}</p>
           </div>
-          <a className="product-remove">x</a>
+          <a
+            className="product-remove"
+            onClick={() => this.props.removeItem(product.id)}
+          >
+            x
+          </a>
         </li>
       );
     });
@@ -120,7 +126,11 @@ class Header extends Component {
                 this.state.isCartOpen ? "cart-preview active" : "cart-preview"
               }
             >
-              <ul className="cart-items">{items}</ul>
+              <ul className="cart-items">
+                <Scrollbars style={{ width: 360, height: 388 }}>
+                  {items}
+                </Scrollbars>
+              </ul>
             </div>
           </div>
         </div>
