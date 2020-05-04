@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Scrollbars } from "react-custom-scrollbars";
+import { ProductContextConsumer } from "../productContext.js";
 
 class Header extends Component {
   state = {
@@ -50,91 +50,96 @@ class Header extends Component {
   }
 
   render() {
-    console.log("header --->" + this.props.cartProducts.length);
-    let items = this.props.cartProducts.map((product) => {
-      return (
-        <li className="cart-item" key={product.id}>
-          <img
-            className="product-image"
-            alt="Product"
-            src={product.image}
-          ></img>
-          <div className="product-info">
-            <p className="product-name">{product.name}</p>
-            <p className="product-price">{product.price}</p>
-          </div>
-          <div className="product-total">
-            <p className="quantity">{product.quantity}</p>
-            <p className="amount">{product.price * product.quantity}</p>
-          </div>
-          <a
-            className="product-remove"
-            onClick={() => this.props.removeItem(product.id)}
-          >
-            x
-          </a>
-        </li>
-      );
-    });
+    // console.log("header --->" + this.props.cartProducts.length);
 
     return (
-      <header>
-        <div className="container">
-          <div className="brand">
-            <img
-              className="logo"
-              alt="Veggie Logo"
-              src="https://raw.githubusercontent.com/itprofessionalsfrontend/shop/master/assets/veggie.png"
-            ></img>
-          </div>
-          <div className="search">
-            <div className="search-form">
-              <input
-                type="search"
-                className="search-keyword"
-                placeholder="Search vegetables and fruits..."
-                onChange={this.props.search}
-              ></input>
+      <ProductContextConsumer>
+        {({ itemCount, totalPrice, cartProducts, removeProduct }) => (
+          <header>
+            <div className="container">
+              <div className="brand">
+                <img
+                  className="logo"
+                  alt="Veggie Logo"
+                  src="https://raw.githubusercontent.com/itprofessionalsfrontend/shop/master/assets/veggie.png"
+                ></img>
+              </div>
+              <div className="search">
+                <div className="search-form">
+                  <input
+                    type="search"
+                    className="search-keyword"
+                    placeholder="Search vegetables and fruits..."
+                    onChange={this.props.search}
+                  ></input>
+                </div>
+              </div>
+              <div className="cart">
+                <div className="cart-info">
+                  <table>
+                    <tbody>
+                      <tr>
+                        <td>Items</td>
+                        <td>:</td>
+                        <td>{itemCount}</td>
+                      </tr>
+                      <tr>
+                        <td>Total</td>
+                        <td>:</td>
+                        <td>{totalPrice}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <a className="cart-icon" href="#" onClick={this.handleCartOpen}>
+                  <img
+                    src="https://raw.githubusercontent.com/itprofessionalsfrontend/shop/master/assets/bag.png"
+                    alt="Shopping Cart"
+                  ></img>
+                </a>
+                <div
+                  ref={this.cartRef}
+                  className={
+                    this.state.isCartOpen
+                      ? "cart-preview active"
+                      : "cart-preview"
+                  }
+                >
+                  <ul className="cart-items">
+                    {cartProducts.map((product) => {
+                      return (
+                        <li className="cart-item" key={product.id}>
+                          <img
+                            className="product-image"
+                            alt="Product"
+                            src={product.image}
+                          ></img>
+                          <div className="product-info">
+                            <p className="product-name">{product.name}</p>
+                            <p className="product-price">{product.price}</p>
+                          </div>
+                          <div className="product-total">
+                            <p className="quantity">{product.quantity}</p>
+                            <p className="amount">
+                              {product.price * product.quantity}
+                            </p>
+                          </div>
+                          <a
+                            className="product-remove"
+                            onClick={() => removeProduct(product.id)}
+                          >
+                            x
+                          </a>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
+              </div>
             </div>
-          </div>
-          <div className="cart">
-            <div className="cart-info">
-              <table>
-                <tbody>
-                  <tr>
-                    <td>Items</td>
-                    <td>:</td>
-                    <td>{this.props.productCount}</td>
-                  </tr>
-                  <tr>
-                    <td>Total</td>
-                    <td>:</td>
-                    <td>{this.props.totalPrice}</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <a className="cart-icon" href="#" onClick={this.handleCartOpen}>
-              <img
-                src="https://raw.githubusercontent.com/itprofessionalsfrontend/shop/master/assets/bag.png"
-                alt="Shopping Cart"
-              ></img>
-            </a>
-            <div
-              ref={this.cartRef}
-              className={
-                this.state.isCartOpen ? "cart-preview active" : "cart-preview"
-              }
-            >
-              <ul className="cart-items">
-                <Scrollbars style={{ width: 360, height: 388 }}>
-                  {items}
-                </Scrollbars>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </header>
+          </header>
+        )}
+      </ProductContextConsumer>
     );
   }
 }
