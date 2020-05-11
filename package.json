@@ -3,10 +3,12 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "scripts": {
+  "homepage" : "https://itprofessionalsfrontend.github.io/react-shop",
+  "scripts":{
     "dev": "parcel ./index.html",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "eslint \"src//**/*.{js,jsx}\" --quiet"
+    "lint": "eslint \"src//**/*.{js,jsx}\" --quiet",
+    "deploy": "sudo gh-pages -d dist"
   },
   "keywords": [],
   "author": "",
