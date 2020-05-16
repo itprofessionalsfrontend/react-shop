@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import Count from "./Count.jsx";
+import { ProductContext } from "../productContext.js";
 
 // class Product extends Component {
 //   state = {
@@ -51,12 +52,14 @@ import Count from "./Count.jsx";
 function Product(props) {
   const [quantity, setQuantity] = useState(1);
 
+  const { addToCart } = useContext(ProductContext);
+
   const getCount = (qnt) => {
     console.log("getCount called and qnt : " + qnt);
     setQuantity(qnt);
   };
 
-  const addToCart = () => {
+  const handleAddToCart = () => {
     let selectedProduct = {
       id: props.id,
       name: props.name,
@@ -65,7 +68,7 @@ function Product(props) {
       quantity: quantity,
     };
 
-    props.addToCart(selectedProduct);
+    addToCart(selectedProduct);
   };
 
   return (
@@ -77,7 +80,7 @@ function Product(props) {
       <p className="product-price">{props.price}</p>
       <Count getCount={getCount} />
       <div className="product-action">
-        <button type="button" onClick={addToCart}>
+        <button type="button" onClick={handleAddToCart}>
           ADD TO CART
         </button>
       </div>

@@ -1,22 +1,22 @@
-import React, { Component } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 
-const { Provider, Consumer } = React.createContext();
+const ProductContext = React.createContext();
 
-class ProductContextProvider extends Component {
-  state = {
+const ProductContextProvider = (props) => {
+  const [state, setState] = useState({
     products: [],
     cartProducts: [],
     itemCount: 0,
     totalPrice: 0,
     loading: true,
-  };
+  });
 
-  componentDidMount() {
-    this.getProducts();
-  }
+  useEffect(() => {
+    getProducts();
+  }, []);
 
-  getProducts() {
+  function getProducts() {
     axios
       .get(
         "https://raw.githubusercontent.com/itprofessionalsfrontend/shop/master/products.json"
@@ -26,7 +26,11 @@ class ProductContextProvider extends Component {
         //   ()=>this.setState({ products: response.data, loading: false }),
         //   10000
         // );
-        this.setState({ products: response.data, loading: false });
+        setState((state) => ({
+          ...state,
+          products: response.data,
+          loading: false,
+        }));
         console.log(response.data);
       })
       .catch(function (error) {
@@ -35,10 +39,10 @@ class ProductContextProvider extends Component {
       });
   }
 
-  addToCart = (selectedProduct) => {
+  const addToCart = (selectedProduct) => {
     // console.log("Home addtocart called. " + selectedProduct.quantity);
-    let cartProductItems = this.state.cartProducts;
-    if (this.checkProduct(selectedProduct.id)) {
+    let cartProductItems = state.cartProducts;
+    if (checkProduct(selectedProduct.id)) {
       //todo:update
       // console.log("already exist product start");
       let productIndex = cartProductItems.findIndex(
@@ -51,38 +55,38 @@ class ProductContextProvider extends Component {
       cartProductItems.push(selectedProduct);
     }
     // console.log(cartProductItems);
-    this.setState({
+    setState((state) => ({
+      ...state,
       cartProducts: cartProductItems,
-      itemCount: this.state.cartProducts.length,
-      totalPrice: this.getTotalPrice(cartProductItems),
-    });
+      itemCount: state.cartProducts.length,
+      totalPrice: getTotalPrice(cartProductItems),
+    }));
   };
 
-  checkProduct(productId) {
-    return this.state.cartProducts.some((product) => {
+  function checkProduct(productId) {
+    return state.cartProducts.some((product) => {
       return product.id === productId;
     });
   }
 
-  removeProduct = (id) => {
+  const removeProduct = (id) => {
     console.log("removeProduct", id);
     //1.Method - filter
-    let filteredProducts = this.state.cartProducts.filter(
-      (item) => item.id !== id
-    );
+    let filteredProducts = state.cartProducts.filter((item) => item.id !== id);
 
-    this.setState({
+    setState((state) => ({
+      ...state,
       cartProducts: filteredProducts,
       itemCount: filteredProducts.length,
-      totalPrice: this.getTotalPrice(filteredProducts),
-    });
+      totalPrice: getTotalPrice(filteredProducts),
+    }));
 
     console.log("filteredList", filteredProducts);
 
     //2.Method - splice
   };
 
-  getTotalPrice(cartProductList) {
+  function getTotalPrice(cartProductList) {
     console.log(cartProductList);
 
     if (cartProductList.length === 0) {
@@ -97,30 +101,17 @@ class ProductContextProvider extends Component {
     return result;
   }
 
-  render() {
-    const {
-      products,
-      cartProducts,
-      itemCount,
-      totalPrice,
-      loading,
-    } = this.state;
-    return (
-      <Provider
-        value={{
-          products: products,
-          cartProducts,
-          itemCount,
-          totalPrice,
-          loading,
-          removeProduct: this.removeProduct,
-          addToCart: this.addToCart,
-        }}
-      >
-        {this.props.children}
-      </Provider>
-    );
-  }
-}
+  return (
+    <ProductContext.Provider
+      value={{
+        ...state,
+        removeProduct: removeProduct,
+        addToCart: addToCart,
+      }}
+    >
+      {props.children}
+    </ProductContext.Provider>
+  );
+};
 
-export { ProductContextProvider, Consumer as ProductContextConsumer };
+export { ProductContextProvider, ProductContext };

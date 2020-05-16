@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import Header from "./Header.jsx";
 import Footer from "./Footer.jsx";
 import Products from "./Products.jsx";
-import { ProductContextConsumer } from "../productContext.js";
+import { ProductContext } from "../productContext.js";
 
 // class Home extends Component {
 //   state = {
@@ -64,6 +64,8 @@ import { ProductContextConsumer } from "../productContext.js";
 function Home(props) {
   const [searchKeyword, setSearchKeyword] = useState("");
 
+  const { products, loading } = useContext(ProductContext);
+
   const handleSearch = (event) => {
     console.log("handle search called..");
     setSearchKeyword(event.target.value);
@@ -72,19 +74,16 @@ function Home(props) {
   return (
     <>
       <Header search={handleSearch}></Header>
-      <ProductContextConsumer>
-        {({ products, loading, addToCart }) => (
-          <Products
-            loading={loading}
-            addToCart={addToCart}
-            productList={products.filter(
-              (item) =>
-                item.name.toLowerCase().includes(searchKeyword.toLowerCase()) ||
-                !searchKeyword
-            )}
-          ></Products>
+
+      <Products
+        loading={loading}
+        productList={products.filter(
+          (item) =>
+            item.name.toLowerCase().includes(searchKeyword.toLowerCase()) ||
+            !searchKeyword
         )}
-      </ProductContextConsumer>
+      ></Products>
+
       <Footer></Footer>
     </>
   );
